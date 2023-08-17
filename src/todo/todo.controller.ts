@@ -9,9 +9,9 @@ import {
   Put,
   Res,
 } from '@nestjs/common';
-import { TodoService } from './todo.service'; 
-import { UpdateTaskDto } from 'src/dto/update-task.dto';
-import { CreateTaskDto } from 'src/dto/create-task.dto';
+import { TodoService } from './todo.service';
+import { UpdateTaskDto } from '../dto/update-task.dto';
+import { CreateTaskDto } from '../dto/create-task.dto';
 
 @Controller('todo')
 export class TodoController {
