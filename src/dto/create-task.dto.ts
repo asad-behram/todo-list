@@ -5,6 +5,10 @@ export class CreateTaskDto {
   @IsNotEmpty()
   readonly task: string;
 
+  @IsString()
+  @IsNotEmpty()
+  readonly description: string;
+
   @IsBoolean()
   readonly completed: boolean;
 }
