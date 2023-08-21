@@ -15,6 +15,7 @@ export class TodoService {
     return await newTask.save();
   }
 
+  // find all completed task
   async findCompletedItems(): Promise<ITask[]> {
     const CompletedItems = await this.taskModel.find({ completed: true });
     return CompletedItems;
@@ -37,6 +38,7 @@ export class TodoService {
     return deletedTask;
   }
 
+  // find task by id
   async findTask(taskId: string): Promise<ITask> {
     return await this.taskModel.findById(taskId);
   }
