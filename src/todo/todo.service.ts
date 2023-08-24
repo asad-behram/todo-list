@@ -11,13 +11,16 @@ export class TodoService {
 
   // create new task in mongo
   async createTask(createTaskdto: CreateTaskDto): Promise<ITask> {
-    const newTask = new this.taskModel(createTaskdto);
-    return await newTask.save();
+    const newTask = await this.taskModel.create(createTaskdto);
+    return newTask;
   }
 
   // find all completed task
   async findCompletedItems(): Promise<ITask[]> {
     const CompletedItems = await this.taskModel.find({ completed: true });
+    if (!CompletedItems) {
+      throw new NotFoundException('No completed task found');
+    }
     return CompletedItems;
   }
 
