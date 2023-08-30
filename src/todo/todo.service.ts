@@ -1,23 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
+import { TodoRepository } from './todo.repository';
 import { ITask } from '../interface/task.interface';
 
 @Injectable()
 export class TodoService {
-  constructor(@InjectModel('Todo') private taskModel: Model<ITask>) {}
+  constructor(@Inject(TodoRepository) private todoRepo: TodoRepository) {}
 
-  // create new task in mongo
-  async createTask(createTaskdto: CreateTaskDto): Promise<ITask> {
-    const newTask = await this.taskModel.create(createTaskdto);
-    return newTask;
-  }
+  // create new task
+  public createTask = async (
+    createTaskdto: CreateTaskDto,
+  ): Promise<CreateTaskDto> => {
+    const newTask: ITask = { ...createTaskdto };
+    return await this.todoRepo.create(newTask);
+  };
 
   // find all completed task
   async findCompletedItems(): Promise<ITask[]> {
-    const CompletedItems = await this.taskModel.find({ completed: true });
+    const CompletedItems = await this.todoRepo.findCompletedItems();
     if (!CompletedItems) {
       throw new NotFoundException('No completed task found');
     }
@@ -26,15 +27,15 @@ export class TodoService {
 
   // get all tasks
   async getAllTasks(): Promise<ITask[]> {
-    const taskData = await this.taskModel.find();
+    const taskData = await this.todoRepo.findAll();
     if (!taskData || taskData.length === 0) {
       throw new NotFoundException('Task not found');
     }
     return taskData;
   }
   // delete task
-  async deleteTask(taskId: string): Promise<ITask> {
-    const deletedTask = await this.taskModel.findByIdAndDelete(taskId);
+  async deleteTask(id: string): Promise<ITask> {
+    const deletedTask = await this.todoRepo.delete(id);
     if (!deletedTask) {
       throw new NotFoundException('task not found');
     }
@@ -42,20 +43,14 @@ export class TodoService {
   }
 
   // find task by id
-  async findTask(taskId: string): Promise<ITask> {
-    return await this.taskModel.findById(taskId);
+  async findTask(id: string): Promise<ITask> {
+    return await this.todoRepo.findOne(id);
   }
 
   // update task
-  async updateTask(
-    taskId: string,
-    updateTaskdto: UpdateTaskDto,
-  ): Promise<ITask> {
-    const existingTask = await this.taskModel.findByIdAndUpdate(
-      taskId,
-      updateTaskdto,
-      { new: true },
-    );
+  async updateTask(id: string, updateTaskdto: UpdateTaskDto): Promise<ITask> {
+    const updateTask: ITask = { ...updateTaskdto };
+    const existingTask = await this.todoRepo.update(updateTask, id);
     if (!existingTask) {
       throw new NotFoundException('Task not found');
     }
