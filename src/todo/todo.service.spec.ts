@@ -6,6 +6,7 @@ import { Todo } from '../schema/todo.schema';
 import { ITask } from 'src/interface/task.interface';
 import { TodoRepository } from './todo.repository';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
+import { UpdateTaskDto } from '../dto/update-task.dto';
 const moduleMocker = new ModuleMocker(global);
 
 describe('TodoService', () => {
@@ -99,6 +100,12 @@ describe('TodoService', () => {
   });
 
   it('should update the task', async () => {
+    const uptest: UpdateTaskDto = {
+      _id: 'ertyu12345432',
+      task: 'updated task',
+      description: 'updated description',
+      completed: false,
+    };
     const updatedTask: ITask = {
       task: 'updated task',
       description: 'updated description',
@@ -109,7 +116,9 @@ describe('TodoService', () => {
       .mockImplementation(async (): Promise<ITask> => {
         return updatedTask;
       });
-    expect(await service.updateTask(task._id)).toStrictEqual(updatedTask);
+    expect(await service.updateTask(task._id, uptest)).toStrictEqual(
+      updatedTask,
+    );
   });
 
   describe('delete task', () => {
