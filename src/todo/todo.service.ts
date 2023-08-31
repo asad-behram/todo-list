@@ -16,6 +16,15 @@ export class TodoService {
     return await this.todoRepo.create(newTask);
   };
 
+  // update task
+  public updateTask = async (
+    id: string,
+    updateDto: UpdateTaskDto,
+  ): Promise<UpdateTaskDto> => {
+    const task: ITask = { ...updateDto };
+    return await this.todoRepo.update(task, id);
+  };
+
   // find all completed task
   async findCompletedItems(): Promise<ITask[]> {
     const CompletedItems = await this.todoRepo.findCompletedItems();
@@ -45,15 +54,5 @@ export class TodoService {
   // find task by id
   async findTask(id: string): Promise<ITask> {
     return await this.todoRepo.findOne(id);
-  }
-
-  // update task
-  async updateTask(id: string, updateTaskdto: UpdateTaskDto): Promise<ITask> {
-    const updateTask: ITask = { ...updateTaskdto };
-    const existingTask = await this.todoRepo.update(updateTask, id);
-    if (!existingTask) {
-      throw new NotFoundException('Task not found');
-    }
-    return existingTask;
   }
 }
