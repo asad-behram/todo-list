@@ -1,7 +1,6 @@
-import { Document } from 'mongoose';
-
-export interface ITask extends Document {
-  readonly task: string;
-  readonly description: string;
-  readonly completed: boolean;
+export interface ITask {
+  _id?: string;
+  task: string;
+  description: string;
+  completed: boolean;
 }
