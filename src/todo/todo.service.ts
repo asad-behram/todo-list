@@ -53,6 +53,7 @@ export class TodoService {
 
   // find task by id
   async findTask(id: string): Promise<ITask> {
-    return await this.todoRepo.findOne(id);
+    const found = await this.todoRepo.findOne(id);
+    return found;
   }
 }

@@ -6,6 +6,7 @@ import { TodoSchema } from './schema/todo.schema';
 import { TodoController } from './todo/todo.controller';
 import { TodoService } from './todo/todo.service';
 import { TodoModule } from './todo/todo.module';
+import { TodoRepository } from './todo/todo.repository';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { TodoModule } from './todo/todo.module';
     TodoModule,
   ],
   controllers: [AppController, TodoController],
-  providers: [AppService, TodoService],
+  providers: [AppService, TodoService, TodoRepository],
 })
 export class AppModule {}

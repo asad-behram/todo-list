@@ -20,7 +20,8 @@ export class TodoRepository {
   }
 
   async findOne(id: string): Promise<ITask> {
-    return await this.todomodel.findOne({ _id: id });
+    const found = await this.todomodel.findById(id);
+    return found;
   }
 
   async findCompletedItems(): Promise<ITask[]> {
