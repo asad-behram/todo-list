@@ -123,12 +123,18 @@ describe('TodoService', () => {
 
   describe('delete task', () => {
     it('should delet the task', async () => {
+      const deleted: ITask = {
+        _id: '64dcbf2258f6d775b3e63ef8',
+        task: 'new task',
+        description: 'new description',
+        completed: true,
+      };
       jest
         .spyOn(todoRepo, 'delete')
         .mockImplementation(async (): Promise<ITask> => {
           return task;
         });
-      expect(await service.deleteTask(task._id)).toBeNull();
+      expect(await service.deleteTask(task._id)).toEqual(deleted);
     });
 
     it('should return error', async () => {
