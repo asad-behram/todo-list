@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodoService } from './todo.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Todo } from '../schema/todo.schema';
 import { ITask } from 'src/interface/task.interface';
 import { TodoRepository } from './todo.repository';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
@@ -20,14 +17,7 @@ describe('TodoService', () => {
   };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TodoService,
-        {
-          provide: getModelToken(Todo.name),
-          useValue: Model,
-        },
-        TodoRepository,
-      ],
+      providers: [TodoService, TodoRepository],
     })
       .useMocker((token) => {
         if (typeof token === 'function') {
@@ -84,7 +74,7 @@ describe('TodoService', () => {
   });
 
   it('should find a task', async () => {
-    const id = '1234321';
+    const id = 'egrew2345654345';
     const foundTask: ITask = {
       task: 'new task',
       description: 'new description',
@@ -135,6 +125,7 @@ describe('TodoService', () => {
     });
 
     it('should return error', async () => {
+      const id = '64dcbf2258f6d775b3e63ef8';
       const error = new Error('error');
       const id = '12343235rertre';
       jest.spyOn(todoRepo, 'delete').mockRejectedValue(error);
