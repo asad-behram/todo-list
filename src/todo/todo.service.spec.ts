@@ -127,7 +127,6 @@ describe('TodoService', () => {
     it('should return error', async () => {
       const id = '64dcbf2258f6d775b3e63ef8';
       const error = new Error('error');
-      const id = '12343235rertre';
       jest.spyOn(todoRepo, 'delete').mockRejectedValue(error);
       await expect(service.deleteTask(id)).rejects.toThrow(error);
     });
