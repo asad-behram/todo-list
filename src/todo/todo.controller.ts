@@ -3,11 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   Post,
   Put,
-  Res,
 } from '@nestjs/common';
 import { TodoService } from './todo.service';
 import { UpdateTaskDto } from '../dto/update-task.dto';
@@ -18,67 +16,46 @@ export class TodoController {
   constructor(private readonly todoService: TodoService) {}
 
   @Get()
-  async getItems(@Res() response) {
+  async getItems() {
     try {
       const itemData = await this.todoService.getAllTasks();
-      return response.status(HttpStatus.OK).json({
-        message: 'Items found',
-        itemData,
-      });
+      return itemData;
     } catch (error) {
-      return response.status(error.status).json(error.response);
+      return error;
     }
   }
   @Get('/search')
-  async searchCompletedItems(@Res() response) {
+  async searchCompletedItems() {
     try {
       const completedItems = await this.todoService.findCompletedItems();
-      return response.status(HttpStatus.OK).json({
-        message: `Completed items found`,
-        completedItems,
-      });
+      return completedItems;
     } catch (error) {
-      return response.status(error.status).json(error.response);
+      return error;
     }
   }
 
   @Get('/:id/edit')
-  async findTaskById(@Res() response, @Param('id') itemId: string) {
+  async findTaskById(@Param('id') itemId: string) {
     try {
       const foundTask = await this.todoService.findTask(itemId);
-      return response.status(HttpStatus.OK).json({
-        message: 'task found',
-        foundTask,
-      });
+      return foundTask;
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error',
-        error: 'Bad Request',
-      });
+      return error;
     }
   }
 
   @Post()
-  async createTask(@Res() response, @Body() createTaskdto: CreateTaskDto) {
+  async createTask(@Body() createTaskdto: CreateTaskDto) {
     try {
       const newTask = await this.todoService.createTask(createTaskdto);
-      return response.status(HttpStatus.CREATED).json({
-        messsage: 'task created',
-        newTask,
-      });
+      return newTask;
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error',
-        error: 'Bad Request',
-      });
+      return error;
     }
   }
 
   @Put('/:id')
   async updateItem(
-    @Res() response,
     @Param('id') itemId: string,
     @Body() updateItemdto: UpdateTaskDto,
   ) {
@@ -87,29 +64,19 @@ export class TodoController {
         itemId,
         updateItemdto,
       );
-      return response.status(HttpStatus.OK).json({
-        message: 'Item updated',
-        existingItem,
-      });
+      return existingItem;
     } catch (error) {
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error',
-        error: 'Bad Request',
-      });
+      return error;
     }
   }
 
   @Delete('/:id')
-  async deleteItem(@Res() response, @Param('id') itemId: string) {
+  async deleteItem(@Param('id') itemId: string) {
     try {
       const deletedItem = await this.todoService.deleteTask(itemId);
-      return response.status(HttpStatus.OK).json({
-        message: 'item has been deleted',
-        deletedItem,
-      });
+      return deletedItem;
     } catch (error) {
-      return response.status(error.status).json(error.response);
+      return error;
     }
   }
 }
