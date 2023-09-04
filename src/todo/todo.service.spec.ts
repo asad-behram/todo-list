@@ -1,8 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TodoService } from './todo.service';
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Todo } from '../schema/todo.schema';
 import { ITask } from 'src/interface/task.interface';
 import { TodoRepository } from './todo.repository';
 import { MockFunctionMetadata, ModuleMocker } from 'jest-mock';
@@ -14,21 +11,13 @@ describe('TodoService', () => {
   let todoRepo: TodoRepository;
 
   const task: ITask = {
-    _id: '64dcbf2258f6d775b3e63ef8',
     task: 'new task',
     description: 'new description',
     completed: true,
   };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        TodoService,
-        {
-          provide: getModelToken(Todo.name),
-          useValue: Model,
-        },
-        TodoRepository,
-      ],
+      providers: [TodoService, TodoRepository],
     })
       .useMocker((token) => {
         if (typeof token === 'function') {
@@ -85,8 +74,8 @@ describe('TodoService', () => {
   });
 
   it('should find a task', async () => {
+    const id = 'egrew2345654345';
     const foundTask: ITask = {
-      _id: '64dcbf2258f6d775b3e63ef8',
       task: 'new task',
       description: 'new description',
       completed: true,
@@ -96,12 +85,12 @@ describe('TodoService', () => {
       .mockImplementation(async (): Promise<ITask> => {
         return foundTask;
       });
-    expect(await service.findTask(task._id)).toEqual(foundTask);
+    expect(await service.findTask(id)).toEqual(foundTask);
   });
 
   it('should update the task', async () => {
+    const id = '12345432';
     const uptest: UpdateTaskDto = {
-      _id: 'ertyu12345432',
       task: 'updated task',
       description: 'updated description',
       completed: false,
@@ -116,15 +105,13 @@ describe('TodoService', () => {
       .mockImplementation(async (): Promise<ITask> => {
         return updatedTask;
       });
-    expect(await service.updateTask(task._id, uptest)).toStrictEqual(
-      updatedTask,
-    );
+    expect(await service.updateTask(id, uptest)).toStrictEqual(updatedTask);
   });
 
   describe('delete task', () => {
     it('should delet the task', async () => {
+      const id = '64dcbf2258f6d775b3e63ef8';
       const deleted: ITask = {
-        _id: '64dcbf2258f6d775b3e63ef8',
         task: 'new task',
         description: 'new description',
         completed: true,
@@ -134,13 +121,14 @@ describe('TodoService', () => {
         .mockImplementation(async (): Promise<ITask> => {
           return task;
         });
-      expect(await service.deleteTask(task._id)).toEqual(deleted);
+      expect(await service.deleteTask(id)).toEqual(deleted);
     });
 
     it('should return error', async () => {
+      const id = '64dcbf2258f6d775b3e63ef8';
       const error = new Error('error');
       jest.spyOn(todoRepo, 'delete').mockRejectedValue(error);
-      await expect(service.deleteTask(task._id)).rejects.toThrow(error);
+      await expect(service.deleteTask(id)).rejects.toThrow(error);
     });
   });
 });
